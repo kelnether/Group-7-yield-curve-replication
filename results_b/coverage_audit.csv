@@ -1,0 +1,13 @@
+as_of_date,maturity_years,status,full_curve_cell,short_end_cell,analysis_policy
+2025-01-31,0.5,published_outside_common_grid,4. spot curve!B5,"3. spot, short end!G6",excluded_for_all_months
+2025-02-28,0.5,published_outside_common_grid,4. spot curve!B6,"3. spot, short end!G7",excluded_for_all_months
+2025-03-31,0.5,published_outside_common_grid,4. spot curve!B7,"3. spot, short end!G8",excluded_for_all_months
+2025-04-30,0.5,published_outside_common_grid,4. spot curve!B8,"3. spot, short end!G9",excluded_for_all_months
+2025-05-30,0.5,published_outside_common_grid,4. spot curve!B9,"3. spot, short end!G10",excluded_for_all_months
+2025-06-30,0.5,published_outside_common_grid,4. spot curve!B10,"3. spot, short end!G11",excluded_for_all_months
+2025-07-31,0.5,not_published,4. spot curve!B11,"3. spot, short end!G12",excluded_for_all_months
+2025-08-29,0.5,not_published,4. spot curve!B12,"3. spot, short end!G13",excluded_for_all_months
+2025-09-30,0.5,not_published,4. spot curve!B13,"3. spot, short end!G14",excluded_for_all_months
+2025-10-31,0.5,not_published,4. spot curve!B14,"3. spot, short end!G15",excluded_for_all_months
+2025-11-28,0.5,not_published,4. spot curve!B15,"3. spot, short end!G16",excluded_for_all_months
+2025-12-31,0.5,not_published,4. spot curve!B16,"3. spot, short end!G17",excluded_for_all_months

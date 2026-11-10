@@ -1,0 +1,31 @@
+{
+  "source": "Yield Curve Construction Using Cubic Spline, Chapter 6",
+  "units": {
+    "maturity": "years",
+    "price_and_cash_flows": "currency per bond",
+    "reference_zero_rate_pct": "percent per year, continuously compounded"
+  },
+  "table_6_1": {
+    "source_location": "Book p. 67–68, Table 6.1 and Eq. (6.1); p. 75, Eq. (6.8) and numerical result",
+    "rounded_short_rates_pct_used_on_p75": [2.13, 2.38],
+    "bonds": [
+      {"maturity": 0.5, "price": 98.94, "face": 100, "semiannual_coupon": 0, "coupon_count": 0, "reference_zero_rate_pct": 2.13},
+      {"maturity": 1.0, "price": 97.65, "face": 100, "semiannual_coupon": 0, "coupon_count": 0, "reference_zero_rate_pct": 2.38},
+      {"maturity": 2.0, "price": 114.26, "face": 100, "semiannual_coupon": 5, "coupon_count": 4, "reference_zero_rate_pct": 2.63125423}
+    ]
+  },
+  "figure_6_3": {
+    "source_location": "Book p. 78, Fig. 6.3 (input screenshot); p. 79, Fig. 6.4 (output chart)",
+    "notes": "The screenshot shows 0.083 for the first maturity. The starter script also tests 1/12 as a one-month assumption. Coupon dates beyond those visible in the screenshot are reconstructed at semiannual intervals.",
+    "bonds": [
+      {"maturity": 0.083, "price": 99.63, "face": 100, "semiannual_coupon": 0, "coupon_count": 0, "reference_zero_rate_pct": 4.448},
+      {"maturity": 0.25, "price": 98.87, "face": 100, "semiannual_coupon": 0, "coupon_count": 0, "reference_zero_rate_pct": 4.546},
+      {"maturity": 0.5, "price": 97.71, "face": 100, "semiannual_coupon": 0, "coupon_count": 0, "reference_zero_rate_pct": 4.633},
+      {"maturity": 1.0, "price": 95.33, "face": 100, "semiannual_coupon": 0, "coupon_count": 0, "reference_zero_rate_pct": 4.783},
+      {"maturity": 2.0, "price": 100, "face": 100, "semiannual_coupon": 2.495, "coupon_count": 4, "reference_zero_rate_pct": 4.933},
+      {"maturity": 4.0, "price": 100, "face": 100, "semiannual_coupon": 2.555, "coupon_count": 8, "reference_zero_rate_pct": 5.055},
+      {"maturity": 7.5, "price": 100, "face": 100, "semiannual_coupon": 2.620, "coupon_count": 15, "reference_zero_rate_pct": 5.192},
+      {"maturity": 18.0, "price": 100, "face": 100, "semiannual_coupon": 2.250, "coupon_count": 36, "reference_zero_rate_pct": 4.233}
+    ]
+  }
+}

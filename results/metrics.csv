@@ -1,0 +1,13 @@
+shape,density,method,train_count,holdout_count,converged,max_train_price_error,holdout_price_mae,zero_rate_rmse_bp,solver_message
+rising,dense,linear,17,3,True,1.6430590221716557e-10,0.01953974424835773,0.33667842703097534,The solution converged.
+rising,dense,natural_cubic,17,3,True,1.6420642623415915e-10,0.00016067770156287983,0.03832359485103417,The solution converged.
+rising,sparse,linear,11,3,True,1.2229861567902844e-10,0.019527161639094476,0.5584751842454455,The solution converged.
+rising,sparse,natural_cubic,11,3,True,1.220428202941548e-10,0.0005438600373442645,0.05812523125346323,The solution converged.
+inverted,dense,linear,17,3,True,1.1581846592889633e-11,0.020667233366552296,0.3368615051105557,The solution converged.
+inverted,dense,natural_cubic,17,3,True,1.1553424883459229e-11,0.00016664549571032694,0.03832350868801349,The solution converged.
+inverted,sparse,linear,11,3,True,5.073275133327115e-12,0.020653764541592068,0.5590855676739069,The solution converged.
+inverted,sparse,natural_cubic,11,3,True,5.073275133327115e-12,0.0005810365713235418,0.0581230343343211,The solution converged.
+humped,dense,linear,17,3,True,1.7195134205394424e-12,0.04082164984978457,1.093515107706536,The solution converged.
+humped,dense,natural_cubic,17,3,True,1.6910917111090384e-12,0.001016131056009802,0.1906875566073277,The solution converged.
+humped,sparse,linear,11,3,True,2.0037305148434825e-12,0.040788892264719344,1.9555322172352267,The solution converged.
+humped,sparse,natural_cubic,11,3,True,2.0037305148434825e-12,0.0024083085131394455,0.2915669915353906,The solution converged.

@@ -1,0 +1,30 @@
+{
+  "bank_of_england": {
+    "publisher": "Bank of England",
+    "archive": "glcnominalmonthedata.zip",
+    "url": "https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/glcnominalmonthedata.zip",
+    "methodology_url": "https://www.bankofengland.co.uk/statistics/yield-curves",
+    "retrieved_at_utc": "2026-11-10T12:02:29Z",
+    "sha256": "c45854fc77b749752572215cbb6385674d618461bf97bb4e6b476d9c3726a7f8",
+    "workbook": "GLC Nominal month end data_2025 to present.xlsx",
+    "workbook_sha256": "7007df8170235c9b174da3b8cb930a397deb3cd8e0f8553d149afe21c8281d8b",
+    "sheet": "4. spot curve",
+    "worksheet_title": "UK nominal spot curve",
+    "short_end_sheet": "3. spot, short end",
+    "rate_unit": "annual_continuously_compounded_percentage_points",
+    "cell_number_format": "0.00"
+  },
+  "coupon_terms": {
+    "publisher": "UK Debt Management Office",
+    "file": "prosp210224.pdf",
+    "url": "https://www.dmo.gov.uk/media/52dlkrjw/prosp210224.pdf",
+    "retrieved_at_utc": "2026-11-10T12:04:49Z",
+    "sha256": "65717c8c7c1b2af6e8ad56b557506fe6a26ba2d9296751e2cb667207a5fceb41",
+    "reference_security": "4% Treasury Gilt 2031",
+    "source_locator": "Cover and paragraph 4 (Interest)",
+    "first_issue_date": "2024-02-29",
+    "annual_coupon_decimal": 0.04,
+    "payments_per_year": 2,
+    "face_gbp": 100
+  }
+}

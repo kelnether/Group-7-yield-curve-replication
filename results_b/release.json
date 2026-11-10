@@ -1,0 +1,110 @@
+{
+  "study_year": 2025,
+  "maturity_grid_years": [
+    1.0,
+    1.5,
+    2.0,
+    2.5,
+    3.0,
+    3.5,
+    4.0,
+    4.5,
+    5.0,
+    5.5,
+    6.0,
+    6.5,
+    7.0,
+    7.5,
+    8.0,
+    8.5,
+    9.0,
+    9.5,
+    10.0
+  ],
+  "first_payment_years": 1.0,
+  "holdout_years": [
+    2.5,
+    5.5,
+    8.5
+  ],
+  "additional_removed_by_density": {
+    "dense": [],
+    "sparse": [
+      1.5,
+      3.5,
+      4.5,
+      6.5,
+      7.5,
+      9.5
+    ]
+  },
+  "methods": [
+    "linear",
+    "natural_cubic"
+  ],
+  "price_kind": "boe_spot_implied_standardized_bond_price",
+  "sources": {
+    "bank_of_england": {
+      "publisher": "Bank of England",
+      "archive": "glcnominalmonthedata.zip",
+      "url": "https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/glcnominalmonthedata.zip",
+      "methodology_url": "https://www.bankofengland.co.uk/statistics/yield-curves",
+      "retrieved_at_utc": "2026-11-10T12:02:29Z",
+      "sha256": "c45854fc77b749752572215cbb6385674d618461bf97bb4e6b476d9c3726a7f8",
+      "workbook": "GLC Nominal month end data_2025 to present.xlsx",
+      "workbook_sha256": "7007df8170235c9b174da3b8cb930a397deb3cd8e0f8553d149afe21c8281d8b",
+      "sheet": "4. spot curve",
+      "worksheet_title": "UK nominal spot curve",
+      "short_end_sheet": "3. spot, short end",
+      "rate_unit": "annual_continuously_compounded_percentage_points",
+      "cell_number_format": "0.00"
+    },
+    "coupon_terms": {
+      "publisher": "UK Debt Management Office",
+      "file": "prosp210224.pdf",
+      "url": "https://www.dmo.gov.uk/media/52dlkrjw/prosp210224.pdf",
+      "retrieved_at_utc": "2026-11-10T12:04:49Z",
+      "sha256": "65717c8c7c1b2af6e8ad56b557506fe6a26ba2d9296751e2cb667207a5fceb41",
+      "reference_security": "4% Treasury Gilt 2031",
+      "source_locator": "Cover and paragraph 4 (Interest)",
+      "first_issue_date": "2024-02-29",
+      "annual_coupon_decimal": 0.04,
+      "payments_per_year": 2,
+      "face_gbp": 100
+    }
+  },
+  "files": {
+    "reference_rates.csv": {
+      "rows": 228,
+      "sha256": "4c7ef1b3570d82c6d0f57cabb8e18ca64e6f047b9a27ecfaa615bfc6174e8afa"
+    },
+    "coverage_audit.csv": {
+      "rows": 12,
+      "sha256": "1f46417d58a6cc9b70444aafd22b5aa713def9d9603e6036a3af38b2a8bc0fe3"
+    },
+    "cashflow_valuation.csv": {
+      "rows": 2280,
+      "sha256": "d650937c74d458118f5b2e988df0d7429ded539b87d419ae3f749c4a5c75486e"
+    },
+    "metrics.csv": {
+      "rows": 48,
+      "sha256": "cbbdb5b42b785b6e522d078456710fac516bfd8d48a1ead6eab7f75edac34435"
+    },
+    "curves.csv": {
+      "rows": 912,
+      "sha256": "240f343fed36f1a47a0710da9a656aabca815dba421a0af530cfb5b22cbd9f3a"
+    },
+    "holdout_prices.csv": {
+      "rows": 144,
+      "sha256": "ed7e65b24d89f22375690b727a7285840c6f602808ab3e7e1413fd7344134fd4"
+    },
+    "standardized_bonds.csv": {
+      "rows": 456,
+      "sha256": "17059a72de070bdaa4d189c50d180a3414ef9f754cd0e9dfa967d91a3ce4048e"
+    },
+    "paired_metrics.csv": {
+      "rows": 24,
+      "sha256": "51e7bda2ae307791d0eaa2950b0ae1ddb3d12e047d1b1892f7cc78415e4f4614"
+    }
+  }
+}
