@@ -1,6 +1,6 @@
 # Yield Curve Construction with Cubic Splines
 
-**DSC6013 · Textbook replication and a UK month-end experiment**
+**DSC6013 · Group 7: DENG Tianyu; XIA Tianquan; ZHANG Yue; LI Wenhao**
 
 [中文说明](#中文说明)
 
