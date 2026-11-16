@@ -1,4 +1,4 @@
-"""Reapply the curve method to a validated Bank of England 2025 data snapshot."""
+"""Run the UK month-end curve experiment. 运行英国月末曲线实验。"""
 
 import argparse
 import json
@@ -12,12 +12,12 @@ import numpy as np
 
 from boe_data import PUBLISHED_GRID, STUDY_YEAR, load_inputs, verified_payload
 from curve import cash_flows, present_value
-from run_experiment import DENSITIES, HOLDOUT, METHODS, evaluate_reference, write_results
+from experiment import DENSITIES, HOLDOUT, METHODS, evaluate_reference, write_results
 
 
 ROOT = Path(__file__).resolve().parent
 SOURCE_DIR = ROOT / "data" / "route_b"
-RESULTS_DIR = ROOT / "results_b"
+RESULTS_DIR = ROOT / "results" / "uk"
 PRICE_KIND = "boe_spot_implied_standardized_bond_price"
 EXPECTED_ROWS = {
     "reference_rates.csv": 228,
@@ -32,7 +32,7 @@ EXPECTED_ROWS = {
 
 
 def standardized_bonds(terms):
-    """One 1Y zero-coupon anchor and coupon bonds with payments starting at 1Y."""
+    """Build one 1Y zero-coupon anchor and coupon bonds with payments starting at 1Y. 构造一年期零息锚点与从一年后开始付息的债券。"""
     face = terms["face_gbp"]
     coupon = face * terms["annual_coupon_decimal"] / terms["payments_per_year"]
     return [
@@ -46,10 +46,13 @@ def standardized_bonds(terms):
 
 
 def value_month(day, observations, bonds, terms):
-    # A dictionary lookup requires an exact published tenor for every cash flow.
+    """Trace every discount and reference price to the same month’s published rates. 从同月公布利率逐笔追溯折现和参考价格。"""
+    # Every cash flow requires an exact published tenor.
+    # 每笔现金流都按精确期限查公布值。
     points = {row["maturity_years"]: row for row in observations}
 
     def reference(times):
+        """Look up each payment tenor directly. 按付款期限直接查原表利率。"""
         return np.array([points[float(t)]["zero_rate_decimal"] for t in times])
 
     prices, valuation = [], []
@@ -74,6 +77,7 @@ def value_month(day, observations, bonds, terms):
 
 
 def paired_metrics(metrics):
+    """Pair by month and density and compute spline-minus-linear differences. 按同月同密度配对，计算样条减线性的差值。"""
     pairs = defaultdict(dict)
     for row in metrics:
         pairs[row["as_of_date"], row["density"]][row["method"]] = row
@@ -93,6 +97,7 @@ def paired_metrics(metrics):
 
 
 def run_route_b(source_dir):
+    """Price, calibrate and score each month to prepare UK results. 逐月定价、校准和评分，准备英国结果表。"""
     sources, (reference_rates, coverage) = load_inputs(source_dir)
     terms = sources["coupon_terms"]
     observations = defaultdict(list)
@@ -124,10 +129,9 @@ def run_route_b(source_dir):
         tables["curves.csv"].extend(result["curves.csv"])
         for file, rows in (
             ("holdout_prices.csv", result["holdout_prices.csv"]),
-            ("standardized_bonds.csv", result["simulated_bonds.csv"]),
+            ("standardized_bonds.csv", result["standardized_bonds.csv"]),
         ):
             for row in rows:
-                row["benchmark_price_gbp"] = row.pop("simulated_price")
                 row["price_kind"] = PRICE_KIND
                 if file == "standardized_bonds.csv":
                     row["coupon_terms_sha256"] = terms["sha256"]
@@ -137,6 +141,7 @@ def run_route_b(source_dir):
 
 
 def publish_results(output_dir, sources, tables):
+    """Validate coverage and atomically publish hashed UK outputs. 校验覆盖并原子发布带散列的英国结果。"""
     if {name: len(rows) for name, rows in tables.items()} != EXPECTED_ROWS:
         raise ValueError("Route B result tables do not match the full-year experiment coverage.")
     for name, rows in tables.items():
@@ -176,7 +181,7 @@ def publish_results(output_dir, sources, tables):
 
 
 def verify_release(output_dir):
-    """Require every table to match the published release before reading it."""
+    """Verify output tables and source manifest before reading. 读取前核对结果表及来源清单。"""
     release = json.loads((output_dir / "release.json").read_text(encoding="utf-8"))
     sources = json.loads((SOURCE_DIR / "sources.json").read_text(encoding="utf-8"))
     if release["sources"] != sources or release["study_year"] != STUDY_YEAR:
@@ -189,6 +194,7 @@ def verify_release(output_dir):
 
 
 def main():
+    """Run the UK month-end experiment independently. 支持单独运行英国月末实验。"""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, default=RESULTS_DIR)
     args = parser.parse_args()

@@ -1,4 +1,4 @@
-"""Read the pinned Bank of England monthly spot-rate archive without imputation."""
+"""Read the pinned Bank of England month-end archive and validate coverage. 读取固定的英格兰银行月末归档并核验覆盖。"""
 
 import json
 from datetime import datetime
@@ -12,10 +12,11 @@ from openpyxl import load_workbook
 
 
 STUDY_YEAR = 2025
-PUBLISHED_GRID = np.arange(2, 21) / 2  # Common complete 1–10Y grid.
+PUBLISHED_GRID = np.arange(2, 21) / 2  # Common complete 1–10Y grid. / 共同完整的 1–10 年网格
 
 
 def verified_payload(path, expected_hash):
+    """Verify file bytes against the manifest SHA-256. 按来源清单核对文件 SHA-256。"""
     payload = path.read_bytes()
     actual_hash = sha256(payload).hexdigest()
     if actual_hash != expected_hash:
@@ -24,7 +25,7 @@ def verified_payload(path, expected_hash):
 
 
 def monthly_rows(sheet, first_row):
-    """Find the single official source date for each month of the study year."""
+    """Locate the unique source observation date for each month. 找到研究年份每月唯一的原始观测日期。"""
     rows = {}
     for cell, in sheet.iter_rows(min_row=first_row, max_col=1):
         value = cell.value
@@ -44,6 +45,7 @@ def monthly_rows(sheet, first_row):
 
 
 def published_rate(cell, source):
+    """Check cell validity and format and return full precision. 检查单元格数值和显示格式并返回原始精度。"""
     value = cell.value
     if type(value) not in (int, float) or not isfinite(value):
         raise ValueError(f"Missing or invalid required rate at {cell.parent.title}!{cell.coordinate}")
@@ -53,6 +55,7 @@ def published_rate(cell, source):
 
 
 def load_inputs(source_dir):
+    """Verify archive and prospectus bytes and read the workbook. 验证归档与发行文件，读取工作簿。"""
     sources = json.loads((source_dir / "sources.json").read_text(encoding="utf-8"))
     source = sources["bank_of_england"]
     coupon = sources["coupon_terms"]
@@ -76,6 +79,7 @@ def load_inputs(source_dir):
 
 
 def extract_panel(workbook, source):
+    """Cross-check the two spot sheets, common tenors and source cells. 对照两张即期表并核验共同期限及原始单元格。"""
     sheet = workbook[source["sheet"]]
     short_end = workbook[source["short_end_sheet"]]
     if (sheet["B1"].value, sheet["A4"].value) != (source["worksheet_title"], "years:"):

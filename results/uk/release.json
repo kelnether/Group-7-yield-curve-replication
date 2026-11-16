@@ -96,7 +96,7 @@
     },
     "holdout_prices.csv": {
       "rows": 144,
-      "sha256": "ed7e65b24d89f22375690b727a7285840c6f602808ab3e7e1413fd7344134fd4"
+      "sha256": "638dc63b339a2119758dc53467c593e790aa65ae4972f5a0c861d702465daace"
     },
     "standardized_bonds.csv": {
       "rows": 456,
