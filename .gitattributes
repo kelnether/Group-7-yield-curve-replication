@@ -1,0 +1,3 @@
+# Preserve CSV bytes used by the release checks. 保留用于发布校验的 CSV 原始字节。
+results/**/*.csv -text whitespace=cr-at-eol
+results/uk/release.json -text

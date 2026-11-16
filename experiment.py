@@ -1,6 +1,5 @@
-"""Run the two textbook examples and the Route A missing-maturity experiment."""
+"""Fixed holdouts, model comparison and CSV export. 固定留出、模型比较和 CSV 导出。"""
 
-import argparse
 import csv
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -8,48 +7,16 @@ from tempfile import TemporaryDirectory
 import numpy as np
 
 from curve import calibrate, cash_flows, interpolate, present_value
-from textbook import reproduce_examples
 
 
-RESULTS_DIR = Path(__file__).resolve().parent / "results"
-MATURITIES = np.arange(1, 21) / 2
-GRID = np.linspace(0.5, 10, 191)
 HOLDOUT = (2.5, 5.5, 8.5)
 SPARSE_EXTRA = (1.5, 3.5, 4.5, 6.5, 7.5, 9.5)
 DENSITIES = {"dense": (), "sparse": SPARSE_EXTRA}
 METHODS = ("linear", "natural_cubic")
 
 
-def rising(t):
-    return 0.02 + 0.02 * (1 - np.exp(-t / 3))
-
-
-def inverted(t):
-    return 0.06 - rising(t)
-
-
-def humped(t):
-    return 0.02 + 0.02 * (t / 3) * np.exp(1 - t / 3)
-
-
-REFERENCE_CURVES = {"rising": rising, "inverted": inverted, "humped": humped}
-
-
-def simulate_bonds(reference):
-    bonds = [
-        {
-            "maturity": float(maturity),
-            "face": 100,
-            "semiannual_coupon": 0 if half_years == 1 else 2,
-            "coupon_count": 0 if half_years == 1 else half_years,
-        }
-        for half_years, maturity in enumerate(MATURITIES, start=1)
-    ]
-    prices = np.array([present_value(reference, cash_flows(bond)) for bond in bonds])
-    return bonds, prices
-
-
 def partition(maturity, extra_removed):
+    """Fixed holdouts take precedence over additional removals. 固定留出优先于额外移除。"""
     if maturity in HOLDOUT:
         return "holdout"
     if maturity in extra_removed:
@@ -58,11 +25,13 @@ def partition(maturity, extra_removed):
 
 
 def evaluate_reference(scenario, bonds, prices, reference_rates, grid):
-    """Evaluate the same prices and holdouts for both interpolators."""
-    metrics, curves, holdout_prices, simulated_bonds = [], [], [], []
+    """Use the same prices and holdouts for both interpolators. 对两种方法使用同一批价格和留出债券。"""
+    metrics, curves, holdout_prices, standardized_bonds = [], [], [], []
     maturities = np.array([bond["maturity"] for bond in bonds])
     test = np.isin(maturities, HOLDOUT)
 
+    # Split the visible prices first, then use the same training and holdout bonds for both methods.
+    # 先划分可见价格，再为两种方法使用同一批训练及留出债券。
     for density, extra_removed in DENSITIES.items():
         partitions = [partition(maturity, extra_removed) for maturity in maturities]
         train = np.array(partitions) == "train"
@@ -71,9 +40,9 @@ def evaluate_reference(scenario, bonds, prices, reference_rates, grid):
         training_nodes = np.isin(grid, maturities[train])
 
         for bond, price, group in zip(bonds, prices, partitions, strict=True):
-            simulated_bonds.append({
+            standardized_bonds.append({
                 **scenario, "density": density, "partition": group,
-                **bond, "simulated_price": float(price),
+                **bond, "benchmark_price_gbp": float(price),
             })
 
         for method in METHODS:
@@ -82,6 +51,8 @@ def evaluate_reference(scenario, bonds, prices, reference_rates, grid):
             fitted_rates = [None] * len(grid)
             fitted_prices = price_errors = [None] * len(HOLDOUT)
             price_mae = rate_rmse = None
+            # Score the curve on the common grid and reprice the three held-out bonds.
+            # 用统一网格评估整条曲线，同时给三只留出债券重新定价。
             if fit.converged:
                 curve = interpolate(maturities[train], fit.rates, method)
                 fitted_rates = curve(grid)
@@ -103,7 +74,7 @@ def evaluate_reference(scenario, bonds, prices, reference_rates, grid):
                 grid, reference_rates, fitted_rates, training_nodes, strict=True,
             ))
             holdout_prices.extend({
-                **key, "maturity_years": maturity, "simulated_price": truth,
+                **key, "maturity_years": maturity, "benchmark_price_gbp": truth,
                 "fitted_price": estimate, "price_error": error,
             } for maturity, truth, estimate, error in zip(
                 maturities[test], prices[test], fitted_prices, price_errors, strict=True,
@@ -112,22 +83,12 @@ def evaluate_reference(scenario, bonds, prices, reference_rates, grid):
         "metrics.csv": metrics,
         "curves.csv": curves,
         "holdout_prices.csv": holdout_prices,
-        "simulated_bonds.csv": simulated_bonds,
+        "standardized_bonds.csv": standardized_bonds,
     }
 
 
-def run_simulation():
-    tables = {}
-    for shape, reference in REFERENCE_CURVES.items():
-        bonds, prices = simulate_bonds(reference)
-        for filename, rows in evaluate_reference(
-            {"shape": shape}, bonds, prices, reference(GRID), GRID,
-        ).items():
-            tables.setdefault(filename, []).extend(rows)
-    return tables
-
-
 def write_results(output_dir, tables):
+    """Stage the CSVs before replacing each table. 先写暂存文件再替换各表。"""
     output_dir.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(dir=output_dir) as staging:
         for filename, rows in tables.items():
@@ -137,22 +98,3 @@ def write_results(output_dir, tables):
                 writer.writerows(rows)
         for filename in tables:
             (Path(staging) / filename).replace(output_dir / filename)
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output-dir", type=Path, default=RESULTS_DIR)
-    args = parser.parse_args()
-
-    textbook = reproduce_examples()
-    tables = run_simulation()
-    write_results(args.output_dir, {**textbook, **tables})
-    metrics = tables["metrics.csv"]
-    converged = sum(row["converged"] for row in metrics)
-    print(f"Textbook: {len(textbook['textbook.csv'])} audit rows. Simulation: {converged}/{len(metrics)} fits converged.")
-    print(f"Results written to {args.output_dir.resolve()}")
-    return int(converged != len(metrics))
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
